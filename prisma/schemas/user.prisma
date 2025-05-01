@@ -1,0 +1,17 @@
+model User {
+  id         String     @id @default(uuid())
+  email      String     @unique
+  password   String
+  name       String
+  status     Boolean    @default(false)
+  permission PERMISSION @default(OPERATOR)
+  sectionId  String
+  positionId String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  position   Position @relation(fields: [positionId], references: [id])
+  section    Section  @relation(fields: [sectionId], references: [id])
+  @@unique([name, sectionId])
+  @@map("users")
+}
