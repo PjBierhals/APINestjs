@@ -29,7 +29,7 @@ async function main() {
   // Criando o usuário MasterTI (autor)
   const masterUser = await prisma.user.create({
     data: {
-      email: 'master@sisgget.com',
+      email: 'master@master.com',
       password: passwordH, // Utilize hash para senhas em produção
       name: 'Master TI',
       status: true,

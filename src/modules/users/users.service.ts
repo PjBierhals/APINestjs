@@ -1,26 +1,51 @@
+import { Role } from './enums/role.enum';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaUsersRepository } from './repositories/prisma-users.repository';
+import { HashingService } from '../auth/hashing/hashing.service';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    private readonly hashService: HashingService,
+    private readonly repositoryUser: PrismaUsersRepository,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    createUserDto.password = await this.hashService.hash(
+      createUserDto.password,
+    );
+    return await this.repositoryUser.create(createUserDto);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.repositoryUser.findAll();
+  }
+  async findAllPermission(role: Role) {
+    return await this.repositoryUser.findAllPermission(role);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findAllPosition(id: string) {
+    return await this.repositoryUser.findAllPosition(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findAllSection(id: string) {
+    return await this.repositoryUser.findAllSection(id);
+  }
+  async findOne(id: string) {
+    return await this.repositoryUser.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findEmail(email: string) {
+    return await this.repositoryUser.findEmail(email);
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    return await this.repositoryUser.update(id, updateUserDto);
+  }
+
+  async remove(id: string) {
+    return await this.repositoryUser.delete(id);
   }
 }
