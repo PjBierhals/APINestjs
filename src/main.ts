@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
+import { ValidationPipe } from './pipes/validation/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -14,7 +17,6 @@ async function bootstrap() {
   const ipAddress = process.env.ADDRESS ?? 'localhost';
   await app.listen(port, ipAddress);
 
-  // Exibe no console a URL em que o servidor está rodando.
   console.log(`🚀 Server is running on http://${ipAddress}:${port}`);
 }
 

@@ -28,16 +28,26 @@ export class PrismaUsersRepository extends UsersRepository<
   }
 
   async findAll(): Promise<User[] | null> {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      include: {
+        position: true,
+        section: true,
+      },
+    });
     return this.mapUsers(users);
   }
 
   async findAllPermission(role: Role): Promise<User[]> {
     const users = await this.prisma.user.findMany({
+      include: {
+        position: true,
+        section: true,
+      },
       where: {
         permission: role,
       },
     });
+
     return this.mapUsers(users);
   }
 
@@ -52,6 +62,10 @@ export class PrismaUsersRepository extends UsersRepository<
 
   async findAllPosition(positionId: string): Promise<User[]> {
     const users = await this.prisma.user.findMany({
+      include: {
+        position: true,
+        section: true,
+      },
       where: {
         positionId,
       },
@@ -61,17 +75,28 @@ export class PrismaUsersRepository extends UsersRepository<
 
   async findOne(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
+      include: {
+        position: true,
+        section: true,
+      },
       where: {
         id,
       },
     });
+    if (!user) return null;
+
     return this.mapUser(user);
   }
 
-  async findEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findFirst({
+  async findEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      include: {
+        position: true,
+        section: true,
+      },
       where: { email },
     });
+    if (!user) return null;
     return this.mapUser(user);
   }
 

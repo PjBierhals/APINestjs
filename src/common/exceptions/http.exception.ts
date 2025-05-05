@@ -1,20 +1,20 @@
 import { HttpStatus } from '@nestjs/common';
 import { BaseException } from './base.exception';
 
-export class BadRequestException extends BaseException {
-  constructor(message: string = 'Bad request') {
-    super(message, HttpStatus.BAD_REQUEST);
+export class HttpExceptionCustom extends BaseException {
+  constructor(message: string, status: HttpStatus = HttpStatus.BAD_REQUEST) {
+    super(message, status);
   }
-}
 
-export class NotFoundException extends BaseException {
-  constructor(resource: string = 'Resource') {
-    super(`${resource} not found`, HttpStatus.NOT_FOUND);
+  static BadRequest(message = 'Bad request') {
+    return new HttpExceptionCustom(message, HttpStatus.BAD_REQUEST);
   }
-}
 
-export class ConflictRequestException extends BaseException {
-  constructor(message: string = 'Conflict request') {
-    super(message, HttpStatus.CONFLICT);
+  static NotFound(resource = 'Resource') {
+    return new HttpExceptionCustom(resource, HttpStatus.NOT_FOUND);
+  }
+
+  static Conflict(message = 'Conflict request') {
+    return new HttpExceptionCustom(message, HttpStatus.CONFLICT);
   }
 }
