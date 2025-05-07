@@ -18,8 +18,22 @@ export class PrismaUsersRepository extends UsersRepository<
 
   private mapUser(user: any): User {
     return {
-      ...user,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      password: user.password,
+      status: user.status,
       permission: user.permission as Role,
+      positionId: {
+        id: user.position.id,
+        description: user.position.description,
+      },
+      sectionId: {
+        id: user.section.id,
+        description: user.section.description,
+      },
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 
@@ -100,9 +114,30 @@ export class PrismaUsersRepository extends UsersRepository<
     return this.mapUser(user);
   }
 
+  async findNameSection(name: string, sectionId: string): Promise<User> {
+    const userSection = await this.prisma.user.findUnique({
+      include: {
+        position: true,
+        section: true,
+      },
+      where: {
+        name_sectionId: {
+          name,
+          sectionId,
+        },
+      },
+    });
+    if (!userSection) return null;
+    return this.mapUser(userSection);
+  }
+
   async delete(id: string): Promise<User | null> {
     const user = await this.prisma.user.delete({
       where: { id },
+      include: {
+        position: true,
+        section: true,
+      },
     });
     return this.mapUser(user);
   }
@@ -110,6 +145,10 @@ export class PrismaUsersRepository extends UsersRepository<
   async create(createDto: CreateUserDto): Promise<User> {
     const user = await this.prisma.user.create({
       data: createDto,
+      include: {
+        position: true,
+        section: true,
+      },
     });
     return this.mapUser(user);
   }
@@ -118,6 +157,10 @@ export class PrismaUsersRepository extends UsersRepository<
     const user = await this.prisma.user.update({
       where: { id },
       data: updateDto,
+      include: {
+        position: true,
+        section: true,
+      },
     });
     return this.mapUser(user);
   }

@@ -14,20 +14,24 @@ import { UpdatePositionDto } from './dto/update-position.dto';
 @Controller('positions')
 export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}
+  @Get('')
+  findAll() {
+    return this.positionsService.findAll();
+  }
+}
+
+@Controller('position')
+export class PositionController {
+  constructor(private readonly positionsService: PositionsService) {}
 
   @Post()
   create(@Body() createPositionDto: CreatePositionDto) {
     return this.positionsService.create(createPositionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.positionsService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.positionsService.findOne(+id);
+    return this.positionsService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +39,11 @@ export class PositionsController {
     @Param('id') id: string,
     @Body() updatePositionDto: UpdatePositionDto,
   ) {
-    return this.positionsService.update(+id, updatePositionDto);
+    return this.positionsService.update(id, updatePositionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.positionsService.remove(+id);
+    return this.positionsService.remove(id);
   }
 }

@@ -53,6 +53,14 @@ export class UserController {
     return this.usersService.findEmail(email);
   }
 
+  @Get('name-section/:name/:sectionId')
+  findNameSection(
+    @Param('name') name: string,
+    @Param('sectionId') sectionId: string,
+  ) {
+    return this.usersService.findNameSection(name, sectionId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);

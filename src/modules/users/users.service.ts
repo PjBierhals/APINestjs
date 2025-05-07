@@ -6,12 +6,14 @@ import { PrismaUsersRepository } from './repositories/prisma-users.repository';
 import { HashingService } from '../auth/hashing/hashing.service';
 import { HttpExceptionCustom } from 'src/common/exceptions/http.exception';
 import { User } from './entities/user.entity';
+import { PositionsService } from '../positions/positions.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly hashService: HashingService,
     private readonly repositoryUser: PrismaUsersRepository,
+    private readonly positionsService: PositionsService,
   ) {}
 
   private existingUser({
@@ -28,19 +30,33 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     // conferir email
-    const existingEmail = this.repositoryUser.findEmail(createUserDto.email);
-
+    const existingEmail = await this.repositoryUser.findEmail(
+      createUserDto.email,
+    );
     if (existingEmail) {
       throw HttpExceptionCustom.Conflict(
         `O e-mail ${createUserDto.email} já existe.`,
       );
     }
     //conferir position
+    await this.positionsService.findOne(createUserDto.positionId);
     //conferir section
+    //conferir se o user ja esta na section
+    console.log('criado');
+    const existingUserSection = await this.repositoryUser.findNameSection(
+      createUserDto.name,
+      createUserDto.sectionId,
+    );
+    if (existingUserSection) {
+      throw HttpExceptionCustom.Conflict(
+        `O Usuário ${createUserDto.name} já esta cadastrado na sessão de id ( ${createUserDto.sectionId} ).`,
+      );
+    }
     //hash senha
     createUserDto.password = await this.hashService.hash(
       createUserDto.password,
     );
+
     return await this.repositoryUser.create(createUserDto);
   }
 
@@ -108,6 +124,20 @@ export class UsersService {
     return user;
   }
 
+  async findNameSection(name: string, sectionId: string) {
+    //existe a sector
+    //existe o usuario no sector
+    const userSector = await this.repositoryUser.findNameSection(
+      name,
+      sectionId,
+    );
+    this.existingUser({
+      user: userSector,
+      message: `O Usuário ${name} já esta cadastrado na sessão de id ( ${sectionId} ).`,
+    });
+    return userSector;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     //existe este id
     const user = await this.repositoryUser.findOne(id);
@@ -118,6 +148,23 @@ export class UsersService {
     });
 
     //confirir o email
+    const existingEmail = await this.repositoryUser.findEmail(
+      updateUserDto.email,
+    );
+
+    if (existingEmail && existingEmail.id !== id) {
+      throw HttpExceptionCustom.Conflict(
+        `O e-mail ${updateUserDto.email} já existe.`,
+      );
+    }
+    //conferir position
+    //conferir section
+    //hash senha
+    if (updateUserDto.password) {
+      updateUserDto.password = await this.hashService.hash(
+        updateUserDto.password,
+      );
+    }
     return await this.repositoryUser.update(id, updateUserDto);
   }
 

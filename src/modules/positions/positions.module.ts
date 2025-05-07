@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { PositionsService } from './positions.service';
-import { PositionsController } from './positions.controller';
+import {
+  PositionController,
+  PositionsController,
+} from './positions.controller';
+import { PositionsRepositoriesModule } from './repositories/positions.repositories.module';
 
 @Module({
-  controllers: [PositionsController],
+  controllers: [PositionsController, PositionController],
   providers: [PositionsService],
+  imports: [PositionsRepositoriesModule],
+  exports: [PositionsService],
 })
 export class PositionsModule {}
