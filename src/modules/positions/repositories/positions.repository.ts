@@ -1,5 +1,5 @@
 export abstract class PositonRepository<Position, CreateDto, UpdateDto> {
-  abstract findAll(): Promise<any[]>;
+  abstract findAll(): Promise<Position[]>;
   abstract findOne(id: string): Promise<Position | null>;
   abstract findDescription(description: string): Promise<Position | null>;
   abstract delete(id: string): Promise<Position | null>;

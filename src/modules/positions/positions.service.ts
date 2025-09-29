@@ -51,7 +51,7 @@ export class PositionsService {
     const position = await this.repositoryPosition.findOne(id);
     this.existingPosition({
       position: position,
-      message: `O cargo de id ( ${id} ) não foi encontrado.`,
+      message: `O cargo de ID ( ${id} ) não foi encontrado.`,
     });
     return position;
   }
@@ -61,7 +61,7 @@ export class PositionsService {
     const position = await this.repositoryPosition.findOne(id);
     this.existingPosition({
       position: position,
-      message: `O cargo de id ( ${id} ) não foi encontrado.`,
+      message: `O cargo de ID ( ${id} ) não foi encontrado.`,
     });
     //verificar a descrição
     const description = await this.repositoryPosition.findDescription(
@@ -80,7 +80,7 @@ export class PositionsService {
     const position = await this.repositoryPosition.findOne(id);
     this.existingPosition({
       position: position,
-      message: `O cargo de id ( ${id} ) não foi encontrado.`,
+      message: `O cargo de ID ( ${id} ) não foi encontrado.`,
     });
 
     return await this.repositoryPosition.delete(id);

@@ -1,4 +1,4 @@
-export class Sector {
+export class Section{
   id: string;
   authorId: string;
   description: string;

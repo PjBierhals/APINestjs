@@ -1,6 +1,6 @@
 import { Position } from 'src/modules/positions/entities/position.entity';
 import { Role } from './../enums/role.enum';
-import { Sector } from 'src/modules/sectors/entities/sector.entity';
+import { Section } from 'src/modules/sections/entities/section.entity';
 export class User {
   id?: string;
   email: string;
@@ -9,7 +9,7 @@ export class User {
   status: boolean;
   permission: Role;
   positionId: string | Partial<Position>;
-  sectionId: string | Partial<Sector>;
+  sectionId: string | Partial<Section>;
   createdAt: Date;
   updatedAt: Date;
 }
